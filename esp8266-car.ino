@@ -1,8 +1,5 @@
-#include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-
-const char *ssid = "ZTE_2.4G_YqmMRN";
-const char *password = "paEuECPP";
+#include "./wifi.h"
 
 ESP8266WebServer server(80);
 
@@ -14,7 +11,7 @@ void setup()
 
   digitalWrite(LED_BUILTIN, HIGH);
 
-  WiFi.begin(ssid, password);
+  begin_wifi();
 
   server.on("/", handle_OnConnect);
   server.on("/ledon", handle_ledon);
