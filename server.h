@@ -2,14 +2,16 @@
 #include "motor.h"
 
 const char webpage[] PROGMEM = R"=====(
-<html>
-	<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Car Controller</title>
 	</head>
 <body>
 	<main style="display:flex;gap: 10px;flex-direction:column;max-width: 300px;margin: auto;">
-		<h1 style="text-align:center">Car Controller</h1>
+		<h1 style="text-align:center;foont-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
     <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')" style="height: 300px;border-radius: 50%;font-size: 10rem;">⮝</button>
     <button onmousedown="postDirection('backward')" onmouseup="postDirection('stop')" style="height: 300px; font-size: 10rem;border-radius: 50%;">⮟</button>
 	</main>
@@ -17,7 +19,6 @@ const char webpage[] PROGMEM = R"=====(
       function postDirection(url) {
           fetch(window.location.href + url, {method: 'POST'})
           .then(function(response) {
-              console.log(response);
           })
           .catch(function(error) {
               console.log(error);
