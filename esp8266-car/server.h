@@ -12,8 +12,20 @@ const char webpage[] PROGMEM = R"=====(
 <body>
 	<main style="display:flex;gap: 10px;flex-direction:column;max-width: 300px;margin: auto;">
 		<h1 style="text-align:center;foont-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
-    <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')" style="height: 300px;border-radius: 50%;font-size: 10rem;">⮝</button>
-    <button onmousedown="postDirection('backward')" onmouseup="postDirection('stop')" style="height: 300px; font-size: 10rem;border-radius: 50%;">⮟</button>
+    <button 
+      onmousedown="postDirection('forward')" 
+      onmouseup="postDirection('stop')" 
+      touchstart="postDirection('forward')" 
+      touchend="postDirection('stop')" 
+      style="height: 50vh;font-size: 10rem;"
+    >⮝</button>
+    <button
+      onmousedown="postDirection('backward')" 
+      onmouseup="postDirection('stop')" 
+      touchstart="postDirection('backward')"
+      touchend="postDirection('stop')" 
+      style="height: 50vh; font-size: 10rem;"
+    >⮟</button>
 	</main>
   <script>
       function postDirection(url) {
