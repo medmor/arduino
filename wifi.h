@@ -6,3 +6,7 @@ const char *password = "paEuECPP";
 void begin_wifi(){
       WiFi.begin(ssid, password);
 }
+
+String get_ip (){
+      return WiFi.localIP().toString();
+}
