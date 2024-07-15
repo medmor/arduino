@@ -1,5 +1,8 @@
+#include "log.h"
 #include "./wifi.h"
+#include "motor.h"
 #include "./server.h"
+
 
 void setup()
 {

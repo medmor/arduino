@@ -1,36 +1,49 @@
 #include <ESP8266WebServer.h>
-#include "motor.h"
 
 const char webpage[] PROGMEM = R"=====(
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+	<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Car Controller</title>
 	</head>
 <body>
-	<main style="display:flex;gap: 10px;flex-direction:column;max-width: 300px;margin: auto;">
-		<h1 style="text-align:center;foont-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
-    <button 
+	<h1 style="text-align:center;foont-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
+	<main style="display: flex;flex-direction: column;height: 90vh;max-width: 300px;margin: auto;">
+      <button
       onmousedown="postDirection('forward')" 
       onmouseup="postDirection('stop')" 
-      touchstart="postDirection('forward')" 
-      touchend="postDirection('stop')" 
-      style="height: 50vh;font-size: 10rem;"
-    >⮝</button>
+      ontouchstart="postDirection('forward')"
+      ontouchend="postDirection('stop')" 
+      style="font-size: 5rem;"
+    >&uarr;</button>
     <button
       onmousedown="postDirection('backward')" 
       onmouseup="postDirection('stop')" 
-      touchstart="postDirection('backward')"
-      touchend="postDirection('stop')" 
-      style="height: 50vh; font-size: 10rem;"
-    >⮟</button>
+      ontouchstart="postDirection('backward')"
+      ontouchend="postDirection('stop')" 
+      style="font-size: 5rem;"
+    >&darr;</button>
+    <button 
+      onmousedown="postDirection('left')" 
+      onmouseup="postDirection('stop')" 
+      ontouchstart="postDirection('left')" 
+      ontouchend="postDirection('stop')" 
+      style="font-size: 5rem;"
+    >&larr;</button>
+    <button
+      onmousedown="postDirection('right')" 
+      onmouseup="postDirection('stop')" 
+      ontouchstart="postDirection('right')"
+      ontouchend="postDirection('stop')" 
+      style="font-size: 5rem;"
+    >&rarr;</button>
 	</main>
   <script>
       function postDirection(url) {
           fetch(window.location.href + url, {method: 'POST'})
           .then(function(response) {
+              console.log(response);
           })
           .catch(function(error) {
               console.log(error);
@@ -64,17 +77,17 @@ void handle_backward()
   server.send(200, "text/plain", "Backward");
 }
 
-// void handle_left()
-// {
-//   motor_left();
-//   server.send(200, "text/plain", "Left");
-// }
+void handle_left()
+{
+  motor_left();
+  server.send(200, "text/plain", "Left");
+}
 
-// void handle_right()
-// {
-//   motor_right();
-//   server.send(200, "text/plain", "Right");
-// }
+void handle_right()
+{
+  motor_right();
+  server.send(200, "text/plain", "Right");
+}
 
 void handle_stop()
 {
@@ -92,8 +105,8 @@ void serverSetup()
   server.on("/", HTTP_GET, handle_connect);
   server.on("/forward", HTTP_POST, handle_forward);
   server.on("/backward", HTTP_POST, handle_backward);
-  // server.on("/left", HTTP_POST, handle_left);
-  // server.on("/right", HTTP_POST, handle_right);
+  server.on("/left", HTTP_POST, handle_left);
+  server.on("/right", HTTP_POST, handle_right);
   server.on("/stop", HTTP_POST, handle_stop);
   server.onNotFound(handle_NotFound);
   server.begin();
