@@ -15,28 +15,28 @@ const char webpage[] PROGMEM = R"=====(
       onmouseup="postDirection('stop')" 
       ontouchstart="postDirection('forward')"
       ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;"
+      style="font-size: 5rem;user-select: none;"
     >&uarr;</button>
     <button
       onmousedown="postDirection('backward')" 
       onmouseup="postDirection('stop')" 
       ontouchstart="postDirection('backward')"
       ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;"
+      style="font-size: 5rem;user-select: none;"
     >&darr;</button>
     <button 
       onmousedown="postDirection('left')" 
       onmouseup="postDirection('stop')" 
       ontouchstart="postDirection('left')" 
       ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;"
+      style="font-size: 5rem;user-select: none;"
     >&larr;</button>
     <button
       onmousedown="postDirection('right')" 
       onmouseup="postDirection('stop')" 
       ontouchstart="postDirection('right')"
       ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;"
+      style="font-size: 5rem;user-select: none;"
     >&rarr;</button>
 	</main>
   <script>
