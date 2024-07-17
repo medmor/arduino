@@ -1,7 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-
-#include "./server.h"
+#include "./env.h"
 
 #pragma region Log ********************
 void logSetup()
@@ -16,8 +15,6 @@ void log(String message)
 #pragma endregion
 
 #pragma region Wifi ********************
-const char *ssid = "ZTE_2.4G_YqmMRN";
-const char *password = "paEuECPP";
 
 String get_ip()
 {

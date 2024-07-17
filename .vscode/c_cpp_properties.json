@@ -19,7 +19,7 @@
             "includePath": [
                 "C:\\Users\\enakr\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\tools\\sdk\\include",
                 "C:\\Users\\enakr\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\tools\\sdk\\lwip2\\include",
-                "C:\\Users\\enakr\\AppData\\Local\\Temp\\arduino\\sketches\\7A03692ACCA6FA8D9AE2751C290EA407\\core",
+                "C:\\Users\\enakr\\AppData\\Local\\Temp\\arduino\\sketches\\698921B8F0AA03C02B3E6173E7AB6872\\core",
                 "C:\\Users\\enakr\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\cores\\esp8266",
                 "C:\\Users\\enakr\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\variants\\nodemcu",
                 "C:\\Users\\enakr\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\3.1.2\\libraries\\ESP8266WiFi\\src",
