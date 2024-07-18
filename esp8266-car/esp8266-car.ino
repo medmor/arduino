@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <Ticker.h>
 #include "./env.h"
 
 #pragma region Log ********************
@@ -15,6 +16,10 @@ void log(String message)
 #pragma endregion
 
 #pragma region Wifi ********************
+
+IPAddress local_IP(192, 168, 4, 22);
+IPAddress gateway(192, 168, 4, 9);
+IPAddress subnet(255, 255, 255, 0);
 
 String get_ip()
 {
@@ -33,32 +38,44 @@ void begin_wifi()
   log("Connected! IP address: ");
   log(get_ip());
 }
+
+void begin_access_point()
+{
+  Serial.print("Setting soft-AP configuration ... ");
+  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+
+  Serial.print("Setting soft-AP ... ");
+  Serial.println(WiFi.softAP(ssid_access_point, password_access_point) ? "Ready" : "Failed!");
+  // WiFi.softAP(ssid);
+  // WiFi.softAP(ssid, password, channel, hidden, max_connection)
+
+  Serial.print("Soft-AP IP address = ");
+  Serial.println(WiFi.softAPIP());
+}
 #pragma endregion
 
 #pragma region Motors ********************
 
-// Ticker accelerator;
+Ticker accelerator;
 
-// For now my motor driver is malfonctioning. only output A is working.
-// So I'm commenting out the other pins.
-// Support only forward and backward movements.
-// I will fix it later.
-
-// int M1_ENA = D7;
+int M1_ENA = D7;
 int M1_IN1 = D1;
 int M1_IN2 = D2;
-// int M2_ENA = D5;
+
+int M2_ENA = D5;
 int M2_IN1 = D3;
 int M2_IN2 = D4;
 
-// int MIN_SPEED = 200;
-// int MAX_SPEED = 255;
-// int speed = MIN_SPEED;
+int MIN_SPEED = 150;
+int MAX_SPEED = 255;
+int ACCELERATION = 5;
+float TIME_TO_ACCELERATE = .1;
+int speed = MIN_SPEED;
 
 void setupMotores()
 {
-  // pinMode(M1_ENA, OUTPUT);
-  // pinMode(M2_ENA, OUTPUT);
+  pinMode(M1_ENA, OUTPUT);
+  pinMode(M2_ENA, OUTPUT);
   pinMode(M1_IN1, OUTPUT);
   pinMode(M1_IN2, OUTPUT);
   pinMode(M2_IN1, OUTPUT);
@@ -68,20 +85,20 @@ void setupMotores()
   digitalWrite(M2_IN1, LOW);
   digitalWrite(M2_IN2, LOW);
 
-  // analogWrite(M1_ENA, speed);
-  //    analogWrite(M2_ENA, 255);
+  analogWrite(M1_ENA, speed);
+  analogWrite(M2_ENA, speed);
 }
 
-// void accelerate()
-// {
-//     log("Accelerate");
-//     if (speed < MAX_SPEED)
-//     {
-//         speed = speed + 10;
-//         analogWrite(M1_ENA, speed);
-//         // analogWrite(M2_ENA, 255);
-//     }
-// }
+void accelerate()
+{
+  log("Accelerate");
+  if (speed < MAX_SPEED)
+  {
+    speed = speed + ACCELERATION;
+    analogWrite(M1_ENA, speed);
+    analogWrite(M2_ENA, speed);
+  }
+}
 
 void motor_forward()
 {
@@ -89,9 +106,9 @@ void motor_forward()
 
   digitalWrite(M1_IN1, LOW);
   digitalWrite(M1_IN2, HIGH);
-  // accelerator.attach(100, accelerate);
   digitalWrite(M2_IN1, LOW);
   digitalWrite(M2_IN2, HIGH);
+  accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
 void motor_backward()
@@ -100,9 +117,9 @@ void motor_backward()
 
   digitalWrite(M1_IN1, HIGH);
   digitalWrite(M1_IN2, LOW);
-  // accelerator.attach(100, accelerate);
   digitalWrite(M2_IN1, HIGH);
   digitalWrite(M2_IN2, LOW);
+  accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
 void motor_left()
@@ -113,6 +130,7 @@ void motor_left()
   digitalWrite(M1_IN2, LOW);
   digitalWrite(M2_IN1, LOW);
   digitalWrite(M2_IN2, HIGH);
+  accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
 void motor_right()
@@ -123,6 +141,7 @@ void motor_right()
   digitalWrite(M1_IN2, HIGH);
   digitalWrite(M2_IN1, HIGH);
   digitalWrite(M2_IN2, LOW);
+  accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
 void motor_stop()
@@ -132,9 +151,10 @@ void motor_stop()
   digitalWrite(M1_IN2, LOW);
   digitalWrite(M2_IN1, LOW);
   digitalWrite(M2_IN2, LOW);
-  // accelerator.detach();
-  // speed = MIN_SPEED;
-  // analogWrite(M1_ENA, speed);
+  accelerator.detach();
+  speed = MIN_SPEED;
+  analogWrite(M1_ENA, speed);
+  analogWrite(M2_ENA, speed);
 }
 
 #pragma endregion
@@ -142,58 +162,17 @@ void motor_stop()
 #pragma region Server ********************
 
 const char webpage[] PROGMEM = R"=====(
+<!-- A simple controller for the car. Transformed to android app using webintoapp website. -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Controller</title>
-    <style>
-        .btn {
-            font-size: 5rem;
-            user-select: none;
-            min-height: 120px;
-
-        }
-    </style>
+    <title>السيارة العجيبة</title>
 </head>
-
 <body>
-    <main
-        style="min-height: 90vh;display: flex;flex-direction: column;max-width: 300px;margin: auto;justify-content: space-around;">
-        <h1 style="text-align:center;">سيارة هبة وحمزة العجيبة</h1>
-        <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('forward')" ontouchend="postDirection('stop')" class="btn">&uarr;</button>
-        <button onmousedown="postDirection('backward')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('backward')" ontouchend="postDirection('stop')" class="btn">&darr;</button>
-        <button onmousedown="postDirection('left')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('left')" ontouchend="postDirection('stop')" class="btn">&larr;</button>
-        <button onmousedown="postDirection('right')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('right')" ontouchend="postDirection('stop')" class="btn">&rarr;</button>
-    </main>
-    <div style="padding: 20px; display: flex; justify-content: center;">
-        <button onclick="changeHost()">Change host</button>
-        <input type="text" id="host" value="http://192.168.1.5/"></input>
-    </div>
-    <script>
-        let host = "http://192.168.1.5/";
-        function postDirection(url) {
-            fetch(host + url, { method: 'POST' })
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
-        function changeHost() {
-            host = document.getElementById("host").value;
-            alert(host);
-        }
-    </script>
+<h1>عليك تنزيل تطبيق سيارة هبة وحمزة العجيبة للتحكم في السيارة</h1>
 </body>
-
 </html>
 )=====";
 
@@ -263,7 +242,8 @@ void setup()
 {
   logSetup();
 
-  begin_wifi();
+  // begin_wifi();
+  begin_access_point();
 
   setupMotores();
 

@@ -31,10 +31,10 @@
     </main>
     <div style="padding: 20px; display: flex; justify-content: center;">
         <button onclick="changeHost()">Change host</button>
-        <input type="text" id="host" value="http://192.168.1.5/"></input>
+        <input type="text" id="host" value="http://192.168.1.22/"></input>
     </div>
     <script>
-        let host = "http://192.168.1.5/";
+        let host = "http://192.168.4.22/";
         function postDirection(url) {
             fetch(host + url, { method: 'POST' })
                 .then(function (response) {
