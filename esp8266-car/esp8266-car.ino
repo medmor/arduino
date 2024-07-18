@@ -142,56 +142,58 @@ void motor_stop()
 #pragma region Server ********************
 
 const char webpage[] PROGMEM = R"=====(
-<html>
-	<head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Car Controller</title>
-	</head>
+    <title>Car Controller</title>
+    <style>
+        .btn {
+            font-size: 5rem;
+            user-select: none;
+            min-height: 120px;
+
+        }
+    </style>
+</head>
+
 <body>
-	<h1 style="text-align:center;foont-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
-	<main style="display: flex;flex-direction: column;height: 90vh;max-width: 300px;margin: auto;">
-      <button
-      onmousedown="postDirection('forward')" 
-      onmouseup="postDirection('stop')" 
-      ontouchstart="postDirection('forward')"
-      ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;user-select: none;"
-    >&uarr;</button>
-    <button
-      onmousedown="postDirection('backward')" 
-      onmouseup="postDirection('stop')" 
-      ontouchstart="postDirection('backward')"
-      ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;user-select: none;"
-    >&darr;</button>
-    <button 
-      onmousedown="postDirection('left')" 
-      onmouseup="postDirection('stop')" 
-      ontouchstart="postDirection('left')" 
-      ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;user-select: none;"
-    >&larr;</button>
-    <button
-      onmousedown="postDirection('right')" 
-      onmouseup="postDirection('stop')" 
-      ontouchstart="postDirection('right')"
-      ontouchend="postDirection('stop')" 
-      style="font-size: 5rem;user-select: none;"
-    >&rarr;</button>
-	</main>
-  <script>
-      function postDirection(url) {
-          fetch(window.location.href + url, {method: 'POST'})
-          .then(function(response) {
-              console.log(response);
-          })
-          .catch(function(error) {
-              console.log(error);
-          });
-      }
-  </script>
+    <main
+        style="min-height: 90vh;display: flex;flex-direction: column;max-width: 300px;margin: auto;justify-content: space-around;">
+        <h1 style="text-align:center;">سيارة هبة وحمزة العجيبة</h1>
+        <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('forward')" ontouchend="postDirection('stop')" class="btn">&uarr;</button>
+        <button onmousedown="postDirection('backward')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('backward')" ontouchend="postDirection('stop')" class="btn">&darr;</button>
+        <button onmousedown="postDirection('left')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('left')" ontouchend="postDirection('stop')" class="btn">&larr;</button>
+        <button onmousedown="postDirection('right')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('right')" ontouchend="postDirection('stop')" class="btn">&rarr;</button>
+    </main>
+    <div style="padding: 20px; display: flex; justify-content: center;">
+        <button onclick="changeHost()">Change host</button>
+        <input type="text" id="host" value="http://192.168.1.5/"></input>
+    </div>
+    <script>
+        let host = "http://192.168.1.5/";
+        function postDirection(url) {
+            fetch(host + url, { method: 'POST' })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+        function changeHost() {
+            host = document.getElementById("host").value;
+            alert(host);
+        }
+    </script>
 </body>
+
 </html>
 )=====";
 

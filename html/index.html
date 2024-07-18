@@ -1,5 +1,6 @@
 <!-- A simple controller for the car. Transformed to android app using webintoapp website. -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -33,7 +34,7 @@
         <input type="text" id="host" value="http://192.168.1.5/"></input>
     </div>
     <script>
-        const host = "http://192.168.1.5/";
+        let host = "http://192.168.1.5/";
         function postDirection(url) {
             fetch(host + url, { method: 'POST' })
                 .then(function (response) {
@@ -45,7 +46,7 @@
         }
         function changeHost() {
             host = document.getElementById("host").value;
-            console.log(host);
+            alert(host);
         }
     </script>
 </body>
