@@ -5,23 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Car Controller</title>
+    <style>
+        .btn {
+            font-size: 5rem;
+            user-select: none;
+            min-height: 120px;
+
+        }
+    </style>
 </head>
 
 <body>
-    <main style="height: 90vh;display: flex;flex-direction: column;max-width: 300px;margin: auto;">
-        <h1 style="text-align:center;font-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
+    <main
+        style="min-height: 90vh;display: flex;flex-direction: column;max-width: 300px;margin: auto;justify-content: space-around;">
+        <h1 style="text-align:center;">سيارة هبة وحمزة العجيبة</h1>
         <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('forward')" ontouchend="postDirection('stop')"
-            style="font-size: 5rem;user-select: none;">&uarr;</button>
+            ontouchstart="postDirection('forward')" ontouchend="postDirection('stop')" class="btn">&uarr;</button>
         <button onmousedown="postDirection('backward')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('backward')" ontouchend="postDirection('stop')"
-            style="font-size: 5rem;user-select: none;">&darr;</button>
+            ontouchstart="postDirection('backward')" ontouchend="postDirection('stop')" class="btn">&darr;</button>
         <button onmousedown="postDirection('left')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('left')" ontouchend="postDirection('stop')"
-            style="font-size: 5rem;user-select: none;">&larr;</button>
+            ontouchstart="postDirection('left')" ontouchend="postDirection('stop')" class="btn">&larr;</button>
         <button onmousedown="postDirection('right')" onmouseup="postDirection('stop')"
-            ontouchstart="postDirection('right')" ontouchend="postDirection('stop')"
-            style="font-size: 5rem;user-select: none;">&rarr;</button>
+            ontouchstart="postDirection('right')" ontouchend="postDirection('stop')" class="btn">&rarr;</button>
     </main>
     <div style="padding: 20px; display: flex; justify-content: center;">
         <button onclick="changeHost()">Change host</button>
