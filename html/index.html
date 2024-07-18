@@ -1,3 +1,4 @@
+<!-- A simple controller for the car. Transformed to android app using webintoapp website. -->
 <html>
 
 <head>
@@ -7,8 +8,8 @@
 </head>
 
 <body>
-    <h1 style="text-align:center;font-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
-    <main style="display: flex;flex-direction: column;height: 90vh;max-width: 300px;margin: auto;">
+    <main style="height: 90vh;display: flex;flex-direction: column;max-width: 300px;margin: auto;">
+        <h1 style="text-align:center;font-size: 3rem;">سيارة هبة وحمزة العجيبة</h1>
         <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')"
             ontouchstart="postDirection('forward')" ontouchend="postDirection('stop')"
             style="font-size: 5rem;user-select: none;">&uarr;</button>
@@ -22,6 +23,10 @@
             ontouchstart="postDirection('right')" ontouchend="postDirection('stop')"
             style="font-size: 5rem;user-select: none;">&rarr;</button>
     </main>
+    <div style="padding: 20px; display: flex; justify-content: center;">
+        <button onclick="changeHost()">Change host</button>
+        <input type="text" id="host" value="http://192.168.1.5/"></input>
+    </div>
     <script>
         const host = "http://192.168.1.5/";
         function postDirection(url) {
@@ -32,6 +37,10 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+        }
+        function changeHost() {
+            host = document.getElementById("host").value;
+            console.log(host);
         }
     </script>
 </body>
