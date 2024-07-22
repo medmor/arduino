@@ -128,8 +128,6 @@ void motor_left()
 
   digitalWrite(M1_IN1, HIGH);
   digitalWrite(M1_IN2, LOW);
-  digitalWrite(M2_IN1, LOW);
-  digitalWrite(M2_IN2, HIGH);
   accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
@@ -137,8 +135,6 @@ void motor_right()
 {
   log("Right");
 
-  digitalWrite(M1_IN1, LOW);
-  digitalWrite(M1_IN2, HIGH);
   digitalWrite(M2_IN1, HIGH);
   digitalWrite(M2_IN2, LOW);
   accelerator.attach(TIME_TO_ACCELERATE, accelerate);
