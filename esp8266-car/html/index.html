@@ -24,7 +24,7 @@
     </style>
 </head>
 
-<body>
+<body onload="getVcc()">
     <main style="height: 400px;position: relative;">
         <!-- BUTTON RIGHT -->
         <button onmousedown="postDirection('right')" onmouseup="postDirection('stop')"
@@ -47,16 +47,26 @@
             ontouchstart="postDirection('backward')" ontouchend="postDirection('stop')" class="btn"
             style="right: 0;top: 50%; transform: translate(0, -50%);">&rarr;</button>
     </main>
+    <div id="vcc_level" style="font-size: 2rem;text-align: center;padding: 30px;">
 
+    </div>
     <script>
         let host = "http://192.168.4.22/";
+        let vcc_level = 0;
         function postDirection(url) {
-            fetch(host + url, { method: 'POST' })
+            fetch(host + url, { method: 'POST', mode: "no-cors" })
         }
         function changeHost() {
             host = document.getElementById("host").value;
             alert(host);
         }
+        function getVcc() {
+            fetch(host + "vcc_level", { method: "POST" })
+                .then(r => r.text())
+                .then(t => vcc_level = t)
+                .finally(() => document.getElementById("vcc_level").textContent = vcc_level)
+        }
+        setInterval(getVcc, 50000);
     </script>
 </body>
 
