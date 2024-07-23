@@ -173,14 +173,13 @@ const char webpage[] PROGMEM = R"=====(
 )=====";
 
 ESP8266WebServer server(80);
-void handle_connect()
-{
-  server.send(200, "text/html", webpage);
-}
-
 void serverLoop()
 {
   server.handleClient();
+}
+void handle_connect()
+{
+  server.send(200, "text/html", webpage);
 }
 
 void handle_forward()
