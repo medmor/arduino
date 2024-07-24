@@ -5,11 +5,13 @@
 #include "./env.h"
 
 #pragma region Log ********************
-void logSetup() {
+void logSetup()
+{
   Serial.begin(115200);
 }
 
-void log(String message) {
+void log(String message)
+{
   Serial.println(message);
 }
 #pragma endregion
@@ -20,14 +22,17 @@ IPAddress local_IP(192, 168, 4, 22);
 IPAddress gateway(192, 168, 4, 9);
 IPAddress subnet(255, 255, 255, 0);
 
-String get_ip() {
+String get_ip()
+{
   return WiFi.localIP().toString();
 }
 
-void begin_wifi() {
+void begin_wifi()
+{
   WiFi.begin(ssid, password);
   log("Connecting to WiFi...");
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     log(".");
   }
@@ -35,7 +40,8 @@ void begin_wifi() {
   log(get_ip());
 }
 
-void begin_access_point() {
+void begin_access_point()
+{
   Serial.print("Setting soft-AP configuration ... ");
   Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
@@ -67,7 +73,8 @@ int ACCELERATION = 5;
 float TIME_TO_ACCELERATE = .1;
 int speed = MIN_SPEED;
 
-void setupMotores() {
+void setupMotores()
+{
   pinMode(M1_ENA, OUTPUT);
   pinMode(M2_ENA, OUTPUT);
   pinMode(M1_IN1, OUTPUT);
@@ -83,16 +90,19 @@ void setupMotores() {
   analogWrite(M2_ENA, speed);
 }
 
-void accelerate() {
+void accelerate()
+{
   log("Accelerate");
-  if (speed < MAX_SPEED) {
+  if (speed < MAX_SPEED)
+  {
     speed = speed + ACCELERATION;
     analogWrite(M1_ENA, speed);
     analogWrite(M2_ENA, speed);
   }
 }
 
-void motor_forward() {
+void motor_forward()
+{
   log("Forward");
 
   digitalWrite(M1_IN1, HIGH);
@@ -102,7 +112,8 @@ void motor_forward() {
   accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
-void motor_backward() {
+void motor_backward()
+{
   log("Backward");
 
   digitalWrite(M1_IN1, LOW);
@@ -112,7 +123,8 @@ void motor_backward() {
   accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
-void motor_left() {
+void motor_left()
+{
   log("Left");
 
   digitalWrite(M1_IN1, HIGH);
@@ -120,7 +132,8 @@ void motor_left() {
   accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
-void motor_right() {
+void motor_right()
+{
   log("Right");
 
   digitalWrite(M2_IN1, LOW);
@@ -128,7 +141,8 @@ void motor_right() {
   accelerator.attach(TIME_TO_ACCELERATE, accelerate);
 }
 
-void motor_stop() {
+void motor_stop()
+{
   log("Stop");
   digitalWrite(M1_IN1, LOW);
   digitalWrite(M1_IN2, LOW);
@@ -160,53 +174,63 @@ const char webpage[] PROGMEM = R"=====(
 )=====";
 
 ESP8266WebServer server(80);
-void serverLoop() {
+void serverLoop()
+{
   server.handleClient();
 }
-void handle_connect() {
+void handle_connect()
+{
   server.send(200, "text/html", webpage);
 }
 
-void handle_forward() {
+void handle_forward()
+{
   motor_forward();
   server.send(200, "text/plain", "Forward");
 }
 
-void handle_backward() {
+void handle_backward()
+{
   motor_backward();
   server.send(200, "text/plain", "Backward");
 }
 
-void handle_left() {
+void handle_left()
+{
   motor_left();
   server.send(200, "text/plain", "Left");
 }
 
-void handle_right() {
+void handle_right()
+{
   motor_right();
   server.send(200, "text/plain", "Right");
 }
 
-void handle_stop() {
+void handle_stop()
+{
   motor_stop();
   server.send(200, "text/plain", "Stop");
 }
 
-void handle_vcc_level() {
+void handle_vcc_level()
+{
   uint16_t vcc_level = ESP.getVcc();
   std::stringstream ss;
-  ss << vcc_level;                       // Convert the value to a string stream
-  std::string vcc_level_str = ss.str();  // Get the resulting string
+  ss << vcc_level;                      // Convert the value to a string stream
+  std::string vcc_level_str = ss.str(); // Get the resulting string
 
-  server.sendHeader("Access-Control-Allow-Origin","*");
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "text/plain", vcc_level_str.c_str());
 }
 
-void handle_NotFound() {
+void handle_NotFound()
+{
   server.send(404, "text/plain", "Not found");
 }
 
-void serverSetup() {
+void serverSetup()
+{
   server.on("/", HTTP_GET, handle_connect);
   server.on("/forward", HTTP_POST, handle_forward);
   server.on("/backward", HTTP_POST, handle_backward);
@@ -222,18 +246,23 @@ void serverSetup() {
 
 #pragma region Setup ********************
 
-void setup() {
+void setup()
+{
   logSetup();
 
-  // begin_wifi();
-  begin_access_point();
+  log("I am here");
+
+  begin_wifi();
+
+  // begin_access_point();
 
   setupMotores();
 
   serverSetup();
 }
 
-void loop() {
+void loop()
+{
   serverLoop();
 }
 
