@@ -17,8 +17,6 @@
 #include "esp_http_server.h"
 #include "env.h"
 
-#define PART_BOUNDARY "123456789000000000000987654321"
-
 #pragma region MODEL_DEFINITION
 
 #define CAMERA_MODEL_AI_THINKER
@@ -128,11 +126,12 @@
 
 #pragma endregion
 
-
 #define MOTOR_1_PIN_1 14
 #define MOTOR_1_PIN_2 15
 #define MOTOR_2_PIN_1 13
 #define MOTOR_2_PIN_2 12
+
+#define PART_BOUNDARY "123456789000000000000987654321"
 
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
