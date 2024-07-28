@@ -4,23 +4,16 @@
 #include <Ticker.h>
 #include "./env.h"
 
-#pragma region Log ********************
-void logSetup()
-{
-  Serial.begin(115200);
-}
-
-void log(String message)
-{
-  Serial.println(message);
-}
-#pragma endregion
-
 #pragma region Wifi ********************
 
-IPAddress local_IP(192, 168, 4, 22);
-IPAddress gateway(192, 168, 4, 9);
+// IPAddress local_IP(192, 168, 4, 22);
+// IPAddress gateway(192, 168, 4, 9);
+// IPAddress subnet(255, 255, 255, 0);
+
+IPAddress staticIP(192, 168, 1, 2);
+IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
+IPAddress dns(8, 8, 8, 8);
 
 String get_ip()
 {
@@ -29,30 +22,32 @@ String get_ip()
 
 void begin_wifi()
 {
+  WiFi.disconnect();
+  WiFi.config(staticIP, gateway, subnet, dns);
   WiFi.begin(ssid, password);
-  log("Connecting to WiFi...");
+  // // // Serial.println("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-    log(".");
+    // // // Serial.println(".");
   }
-  log("Connected! IP address: ");
-  log(get_ip());
+  // // // Serial.println("Connected! IP address: ");
+  // // // Serial.println(get_ip());
 }
 
-void begin_access_point()
-{
-  Serial.print("Setting soft-AP configuration ... ");
-  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+// void begin_access_point()
+// {
+//   // // // Serial.print("Setting soft-AP configuration ... ");
+//   // // // Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
-  Serial.print("Setting soft-AP ... ");
-  Serial.println(WiFi.softAP(ssid_access_point, password_access_point) ? "Ready" : "Failed!");
-  // WiFi.softAP(ssid);
-  // WiFi.softAP(ssid, password, channel, hidden, max_connection)
+//   // // // Serial.print("Setting soft-AP ... ");
+//   // // // Serial.println(WiFi.softAP(ssid_access_point, password_access_point) ? "Ready" : "Failed!");
+//   // WiFi.softAP(ssid);
+//   // WiFi.softAP(ssid, password, channel, hidden, max_connection)
 
-  Serial.print("Soft-AP IP address = ");
-  Serial.println(WiFi.softAPIP());
-}
+//   // // // Serial.print("Soft-AP IP address = ");
+//   // // // Serial.println(WiFi.softAPIP());
+// }
 #pragma endregion
 
 #pragma region Motors ********************
@@ -92,7 +87,7 @@ void setupMotores()
 
 void accelerate()
 {
-  log("Accelerate");
+  // // // Serial.println("Accelerate");
   if (speed < MAX_SPEED)
   {
     speed = speed + ACCELERATION;
@@ -103,7 +98,7 @@ void accelerate()
 
 void motor_forward()
 {
-  log("Forward");
+  // // Serial.println("Forward");
 
   digitalWrite(M1_IN1, HIGH);
   digitalWrite(M1_IN2, LOW);
@@ -114,7 +109,7 @@ void motor_forward()
 
 void motor_backward()
 {
-  log("Backward");
+  // // Serial.println("Backward");
 
   digitalWrite(M1_IN1, LOW);
   digitalWrite(M1_IN2, HIGH);
@@ -125,7 +120,7 @@ void motor_backward()
 
 void motor_left()
 {
-  log("Left");
+  // // Serial.println("Left");
 
   digitalWrite(M1_IN1, HIGH);
   digitalWrite(M1_IN2, LOW);
@@ -134,7 +129,7 @@ void motor_left()
 
 void motor_right()
 {
-  log("Right");
+  // // Serial.println("Right");
 
   digitalWrite(M2_IN1, LOW);
   digitalWrite(M2_IN2, HIGH);
@@ -143,7 +138,7 @@ void motor_right()
 
 void motor_stop()
 {
-  log("Stop");
+  // // Serial.println("Stop");
   digitalWrite(M1_IN1, LOW);
   digitalWrite(M1_IN2, LOW);
   digitalWrite(M2_IN1, LOW);
@@ -158,20 +153,9 @@ void motor_stop()
 
 #pragma region Server ********************
 
-const char webpage[] PROGMEM = R"=====(
-<!-- A simple controller for the car. Transformed to android app using webintoapp website. -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السيارة العجيبة</title>
-</head>
-<body>
-<h1>عليك تنزيل تطبيق سيارة هبة وحمزة العجيبة للتحكم في السيارة</h1>
-</body>
-</html>
-)=====";
+boolean is_connected = false;
+unsigned long lastHeartbeat = 0;
+const unsigned long heartbeatTimeout = 1000;
 
 ESP8266WebServer server(80);
 void serverLoop()
@@ -180,49 +164,83 @@ void serverLoop()
 }
 void handle_connect()
 {
-  server.send(200, "text/html", webpage);
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.send(200, "text/plain", "Connected");
+  lastHeartbeat = millis();
+}
+
+void checkClientConnection()
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastHeartbeat > heartbeatTimeout)
+  {
+    // // // Serial.println("Client disconnected");
+    is_connected = false;
+  }
+  else
+  {
+    // // // Serial.println("Client connected");
+    is_connected = true;
+  }
 }
 
 void handle_forward()
 {
-  motor_forward();
-  server.send(200, "text/plain", "Forward");
+  if (is_connected)
+  {
+    motor_forward();
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "text/plain", "Forward");
+  }
 }
 
 void handle_backward()
 {
-  motor_backward();
-  server.send(200, "text/plain", "Backward");
+  if (is_connected)
+  {
+    motor_backward();
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "text/plain", "Backward");
+  }
 }
 
 void handle_left()
 {
-  motor_left();
-  server.send(200, "text/plain", "Left");
+  if (is_connected)
+  {
+    motor_left();
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "text/plain", "Left");
+  }
 }
 
 void handle_right()
 {
-  motor_right();
-  server.send(200, "text/plain", "Right");
+  if (is_connected)
+  {
+    motor_right();
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "text/plain", "Right");
+  }
 }
 
 void handle_stop()
 {
   motor_stop();
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(200, "text/plain", "Stop");
 }
 
-void handle_vcc_level()
-{
-  uint16_t vcc_level = ESP.getVcc();
-  std::stringstream ss;
-  ss << vcc_level;                      // Convert the value to a string stream
-  std::string vcc_level_str = ss.str(); // Get the resulting string
+// void handle_vcc_level()
+// {
+//   uint16_t vcc_level = ESP.getVcc();
+//   std::stringstream ss;
+//   ss << vcc_level;                      // Convert the value to a string stream
+//   std::string vcc_level_str = ss.str(); // Get the resulting string
 
-  server.sendHeader("Access-Control-Allow-Origin", "*");
-  server.send(200, "text/plain", vcc_level_str.c_str());
-}
+//   server.sendHeader("Access-Control-Allow-Origin", "*");
+//   server.send(200, "text/plain", vcc_level_str.c_str());
+// }
 
 void handle_NotFound()
 {
@@ -237,7 +255,7 @@ void serverSetup()
   server.on("/left", HTTP_POST, handle_left);
   server.on("/right", HTTP_POST, handle_right);
   server.on("/stop", HTTP_POST, handle_stop);
-  server.on("/vcc_level", HTTP_POST, handle_vcc_level);
+  // server.on("/vcc_level", HTTP_POST, handle_vcc_level);
   server.onNotFound(handle_NotFound);
   server.begin();
 }
@@ -248,9 +266,7 @@ void serverSetup()
 
 void setup()
 {
-  logSetup();
-
-  log("I am here");
+  Serial.begin(115200);
 
   begin_wifi();
 
@@ -264,6 +280,11 @@ void setup()
 void loop()
 {
   serverLoop();
+  checkClientConnection();
+  if (WiFi.status() != WL_CONNECTED || !is_connected)
+  {
+    motor_stop();
+  }
 }
 
 #pragma endregion
