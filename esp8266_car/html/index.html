@@ -64,7 +64,7 @@
             alert(host);
         }
         function checkConnection() {
-            fetch(host)
+            fetch(host, { mode: "no-cors" })
                 .then(r => connectionDiv.style.fill = "green")
                 .catch(() => connectionDiv.style.fill = "red")
         }

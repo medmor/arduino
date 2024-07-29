@@ -6,10 +6,9 @@
 void setup()
 {
   Serial.begin(115200);
+  Serial.println("Starting...");
 
   begin_wifi();
-
-  setupMotores();
 
   serverSetup();
 }
@@ -17,7 +16,6 @@ void setup()
 void loop()
 {
   serverLoop();
-  checkClientConnection();
 }
 
 #pragma endregion
