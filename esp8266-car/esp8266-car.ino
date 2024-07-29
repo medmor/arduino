@@ -25,28 +25,28 @@ void begin_wifi()
   WiFi.disconnect();
   WiFi.config(staticIP, gateway, subnet, dns);
   WiFi.begin(ssid, password);
-  // // // Serial.println("Connecting to WiFi...");
+  // Serial.println("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-    // // // Serial.println(".");
+    // Serial.println(".");
   }
-  // // // Serial.println("Connected! IP address: ");
-  // // // Serial.println(get_ip());
+  // Serial.println("Connected! IP address: ");
+  // Serial.println(get_ip());
 }
 
 // void begin_access_point()
 // {
-//   // // // Serial.print("Setting soft-AP configuration ... ");
-//   // // // Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+//   // Serial.print("Setting soft-AP configuration ... ");
+//   // Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
-//   // // // Serial.print("Setting soft-AP ... ");
-//   // // // Serial.println(WiFi.softAP(ssid_access_point, password_access_point) ? "Ready" : "Failed!");
+//   // Serial.print("Setting soft-AP ... ");
+//   // Serial.println(WiFi.softAP(ssid_access_point, password_access_point) ? "Ready" : "Failed!");
 //   // WiFi.softAP(ssid);
 //   // WiFi.softAP(ssid, password, channel, hidden, max_connection)
 
-//   // // // Serial.print("Soft-AP IP address = ");
-//   // // // Serial.println(WiFi.softAPIP());
+//   // Serial.print("Soft-AP IP address = ");
+//   // Serial.println(WiFi.softAPIP());
 // }
 #pragma endregion
 
