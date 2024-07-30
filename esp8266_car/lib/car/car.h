@@ -1,6 +1,5 @@
 #include <Arduino.h>
-#include <Ticker.h>
-
+#include <motor.h>
 class Car
 {
 public:
@@ -13,8 +12,8 @@ public:
     void accelerate();
 
 private:
-    int enM1, in1M1, in2M1, enM2, in1M2, in2M2,
-        MIN_SPEED = 150,
+    Motor motor1, motor2;
+    int MIN_SPEED = 150,
         MAX_SPEED = 255,
         ACCELERATION = .5,
         speed = MIN_SPEED;
