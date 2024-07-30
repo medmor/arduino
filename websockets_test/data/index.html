@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ESP32 WebSocket Server</title>
+</head>
+
+<body>
+    <h1>ESP32 WebSocket Server</h1>
+    <div id="message">Waiting for WebSocket connection...</div>
+    <script>
+        var gateway = `ws://${window.location.hostname}/ws`;
+        var websocket;
+
+        window.addEventListener('load', onLoad);
+
+        function onLoad(event) {
+            initWebSocket();
+        }
+
+        function initWebSocket() {
+            console.log('Trying to open a WebSocket connection...');
+            websocket = new WebSocket(gateway);
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;
+        }
+
+        function onOpen(event) {
+            console.log('Connection opened');
+            document.getElementById('message').innerHTML = 'WebSocket connection opened';
+        }
+
+        function onClose(event) {
+            console.log('Connection closed');
+            document.getElementById('message').innerHTML = 'WebSocket connection closed';
+            setTimeout(initWebSocket, 2000); // Reconnect after 2 seconds
+        }
+
+        function onMessage(event) {
+            console.log('Message from server:', event.data);
+            document.getElementById('message').innerHTML = event.data;
+        }
+    </script>
+</body>
+
+</html>
