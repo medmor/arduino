@@ -1,7 +1,5 @@
-#include <Arduino.h>
 #include <ESP8266WebServer.h>
 #include <car.h>
-#include <LittleFS.h>
 
 class CarServer
 {
