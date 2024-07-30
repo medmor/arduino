@@ -21,14 +21,14 @@ void begin_wifi()
     WiFi.disconnect();
     WiFi.config(staticIP, gateway, subnet, dns);
     WiFi.begin(ssid, password);
-    // Serial.println("Connecting to WiFi...");
+    Serial.println("Connecting to WiFi...");
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
-        // Serial.println(".");
+        Serial.println(".");
     }
-    // Serial.println("Connected! IP address: ");
-    // Serial.println(get_ip());
+    Serial.println("Connected! IP address: ");
+    Serial.println(get_ip());
 }
 
 // void begin_access_point()

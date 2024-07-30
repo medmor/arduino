@@ -17,5 +17,3 @@ void loop()
 {
   serverLoop();
 }
-
-#pragma endregion

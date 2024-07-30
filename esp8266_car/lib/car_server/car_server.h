@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WebServer.h>
 #include <car.h>
+#include <LittleFS.h>
 
 Car car = Car(D7, D1, D2, D5, D3, D4);
 
@@ -37,11 +38,32 @@ void serverLoop()
 
     car.accelerate();
 }
+
 void handle_connect()
 {
     // server.sendHeader("Access-Control-Allow-Origin", "*");
     server.send(200, "text/plain", "Connected");
     lastHeartbeat = millis();
+}
+
+void handle_index()
+{
+    if (!LittleFS.begin())
+    {
+        Serial.println("Failed to mount file system");
+        return;
+    }
+
+    File file = LittleFS.open("/index.html", "r");
+    if (file)
+    {
+        server.streamFile(file, "text/html");
+        file.close();
+    }
+    else
+    {
+        Serial.println("Failed to open file");
+    }
 }
 
 void handle_forward()
@@ -98,7 +120,8 @@ void handle_NotFound()
 
 void serverSetup()
 {
-    server.on("/", HTTP_GET, handle_connect);
+    server.on("/", HTTP_GET, handle_index);
+    server.on("/connect", HTTP_GET, handle_connect);
     server.on("/forward", HTTP_POST, handle_forward);
     server.on("/backward", HTTP_POST, handle_backward);
     server.on("/left", HTTP_POST, handle_left);

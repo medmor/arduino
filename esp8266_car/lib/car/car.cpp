@@ -3,7 +3,7 @@
 Car::Car(int enM1, int in1M1, int in2M1, int enM2, int in1M2, int in2M2)
 {
     motor1.setUp(enM1, in1M1, in2M1);
-    motor2.setUp(enM2, in1M2, in2M2);
+    motor2.setUp(enM2, in2M2, in1M2);
     motor1.setSpeed(speed);
     motor2.setSpeed(speed);
 }
