@@ -54,7 +54,6 @@
     <script>
         let gateway = `ws://${window.location.hostname}:81`;
         let websocket;
-        let connected = false;
         const connectionDiv = document.getElementById("connection").getElementsByTagName("circle")[0];
 
         window.addEventListener('load', onLoad);
@@ -67,24 +66,20 @@
             websocket = new WebSocket(gateway);
             websocket.onopen = onOpen;
             websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
         }
 
         function onOpen(event) {
-            connected = true;
             connectionDiv.style.fill = "green";
         }
 
         function onClose(event) {
-            connected = false;
             connectionDiv.style.fill = "red";
             setTimeout(initWebSocket, 1000);
         }
 
         function postDirection(direction) {
-            if (connected) {
+            if (connectionDiv.style.fill == "green")
                 websocket.send(direction);
-            }
         }
     </script>
 </body>

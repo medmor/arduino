@@ -1,20 +1,12 @@
 #include "car_server.h"
 #include <LittleFS.h>
 
-CarServer::CarServer(int sPort, int wPort)
-{
-    serverPort = sPort;
-    webSocketPort = wPort;
-}
-
-CarServer::~CarServer()
-{
-}
-
 void CarServer::setup()
 {
+    LittleFS.begin();
     webSocket.begin();
-    webSocket.onEvent(webSocketEvent);
+    webSocket.onEvent([this](uint8_t num, WStype_t type, unsigned char *payload, size_t length)
+                      { webSocketEvent(num, type, payload, length); });
 
     server.on("/", HTTP_GET, [this]()
               { handleIndex(); });
@@ -29,16 +21,16 @@ void CarServer::loop()
     server.handleClient();
 
     webSocket.loop();
+
+    if (webSocket.connectedClients() == 0)
+    {
+        car.stop();
+    }
 }
 
 void CarServer::handleIndex()
 {
     Serial.println("Web Server: received a web page request");
-    if (!LittleFS.begin())
-    {
-        Serial.println("Failed to mount file system");
-        return;
-    }
 
     File file = LittleFS.open("/index.html", "r");
     if (file)
@@ -52,22 +44,35 @@ void CarServer::handleIndex()
     }
 }
 
-void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
+void CarServer::webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
     switch (type)
     {
-    case WStype_DISCONNECTED:
-        Serial.printf("[%u] Disconnected!\n", num);
-        break;
-    case WStype_CONNECTED:
-    {
-        Serial.printf("[%u] Connected from \n", num);
-    }
-    break;
     case WStype_TEXT:
-        Serial.printf("[%u] Received text: %s\n", num, payload);
+        if (String((char *)payload) == "forward")
+        {
+            car.forward();
+        }
+        else if (String((char *)payload) == "backward")
+        {
+            car.backward();
+        }
+        else if (String((char *)payload) == "left")
+        {
+            car.left();
+        }
+        else if (String((char *)payload) == "right")
+        {
+            car.right();
+        }
+        else if (String((char *)payload) == "stop")
+        {
+            car.stop();
+        }
 
-        String echoMessage = "Received:  " + String((char *)payload);
+        break;
+
+    default:
         break;
     }
 }

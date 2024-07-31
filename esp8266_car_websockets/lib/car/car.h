@@ -9,7 +9,6 @@ public:
     void left();
     void right();
     void stop();
-    void accelerate();
 
 private:
     Motor motor1, motor2;
@@ -18,4 +17,5 @@ private:
         ACCELERATION = .5,
         speed = MIN_SPEED;
     bool accelerating = false;
+    void accelerate();
 };
