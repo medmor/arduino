@@ -1,27 +1,66 @@
 #include <ESP8266WebServer.h>
-#include <car.h>
+#include <WebSocketsServer.h>
+#include <LittleFS.h>
 
-class CarServer
+ESP8266WebServer server(80);
+WebSocketsServer webSocket = WebSocketsServer("/ws");
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
-public:
-    void setup();
-    void loop();
+    switch (type)
+    {
+    case WStype_DISCONNECTED:
+        Serial.printf("[%u] Disconnected!\n", num);
+        break;
+    case WStype_CONNECTED:
+    {
+        IPAddress ip = webSocket.remoteIP(num);
+        Serial.printf("[%u] Connected from %d.%d.%d.%d\n", num, ip[0], ip[1], ip[2], ip[3]);
+    }
+    break;
+    case WStype_TEXT:
+        Serial.printf("[%u] Received text: %s\n", num, payload);
 
-private:
-    void handle_index();
-    void handle_connect();
-    void handle_forward();
-    void handle_backward();
-    void handle_left();
-    void handle_right();
-    void handle_stop();
-    void handle_NotFound();
+        String echoMessage = "Received:  " + String((char *)payload);
+        webSocket.sendTXT(num, echoMessage);
+        break;
+    }
+}
 
-    void checkClientConnection();
+void server_setup()
+{
 
-    ESP8266WebServer server = ESP8266WebServer(80);
-    boolean is_connected = false;
-    unsigned long lastHeartbeat = 0;
-    const unsigned long heartbeatTimeout = 1000;
-    Car car = Car(D7, D1, D2, D5, D3, D4);
-};
+    webSocket.begin();
+    webSocket.onEvent(webSocketEvent);
+
+    server.on("/", HTTP_GET, []()
+              {
+    Serial.println("Web Server: received a web page request");
+    if (!LittleFS.begin())
+    {
+        Serial.println("Failed to mount file system");
+        return;
+    }
+
+    File file = LittleFS.open("/index.html", "r");
+    if (file)
+    {
+        server.streamFile(file, "text/html");
+        file.close();
+    }
+    else
+    {
+        Serial.println("Failed to open file");
+    } });
+
+    server.begin();
+    Serial.print("ESP8266 Web Server's IP address: ");
+    Serial.println(WiFi.localIP());
+}
+
+void server_loop()
+{
+    server.handleClient();
+
+    webSocket.loop();
+}
