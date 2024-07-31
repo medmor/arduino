@@ -2,15 +2,60 @@
 <html>
 
 <head>
-    <title>ESP32 WebSocket Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سيارة هبة وحمزة العجيبة</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .btn {
+            font-size: 5rem;
+            user-select: none;
+            min-height: 120px;
+            border-radius: 50%;
+            width: 120px;
+            height: auto;
+            position: absolute;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>ESP32 WebSocket Server</h1>
-    <div id="message">Waiting for WebSocket connection...</div>
+    <main style="height: 400px;position: relative;">
+        <!-- BUTTON RIGHT -->
+        <button onmousedown="postDirection('right')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('right')" ontouchend="postDirection('stop')" class="btn"
+            style="top: 0;left: 50%; transform: translate(-50%, 0);">&uarr;</button>
+        <!-- BUTTON LEFT -->
+        <button onmousedown="postDirection('left')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('left')" ontouchend="postDirection('stop')" class="btn"
+            style="bottom: 0;left: 50%; transform: translate(-50%, 0);">&darr;</button>
+        <!-- BUTTON STOP -->
+        <button onmousedown="postDirection('stop')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('stop')" ontouchend="postDirection('stop')" class="btn"
+            style="left: 50%;top:50%; transform: translate(-50%, -50%);">&#9632;</button>
+        <!-- BUTTON FORWARD -->
+        <button onmousedown="postDirection('forward')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('forward')" ontouchend="postDirection('stop')" class="btn"
+            style="left: 0;top: 50%; transform: translate(0, -50%);">&larr;</button>
+        <!-- BUTTON BACKWARD -->
+        <button onmousedown="postDirection('backward')" onmouseup="postDirection('stop')"
+            ontouchstart="postDirection('backward')" ontouchend="postDirection('stop')" class="btn"
+            style="right: 0;top: 50%; transform: translate(0, -50%);">&rarr;</button>
+    </main>
+    <div id="connection" style="text-align: center;padding: 10px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" version="1.1">
+            <circle cx="50" cy="50" r="25" />
+        </svg>
+    </div>
     <script>
-        var gateway = `ws://${window.location.hostname}/ws`;
-        var websocket;
+        let gateway = `ws://${window.location.hostname}:81`;
+        let websocket;
+        let connected = false;
+        const connectionDiv = document.getElementById("connection").getElementsByTagName("circle")[0];
 
         window.addEventListener('load', onLoad);
 
@@ -19,7 +64,6 @@
         }
 
         function initWebSocket() {
-            console.log('Trying to open a WebSocket connection...');
             websocket = new WebSocket(gateway);
             websocket.onopen = onOpen;
             websocket.onclose = onClose;
@@ -27,19 +71,20 @@
         }
 
         function onOpen(event) {
-            console.log('Connection opened');
-            document.getElementById('message').innerHTML = 'WebSocket connection opened';
+            connected = true;
+            connectionDiv.style.fill = "green";
         }
 
         function onClose(event) {
-            console.log('Connection closed');
-            document.getElementById('message').innerHTML = 'WebSocket connection closed';
-            setTimeout(initWebSocket, 2000); // Reconnect after 2 seconds
+            connected = false;
+            connectionDiv.style.fill = "red";
+            setTimeout(initWebSocket, 1000);
         }
 
-        function onMessage(event) {
-            console.log('Message from server:', event.data);
-            document.getElementById('message').innerHTML = event.data;
+        function postDirection(direction) {
+            if (connected) {
+                websocket.send(direction);
+            }
         }
     </script>
 </body>

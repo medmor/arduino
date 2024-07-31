@@ -4,6 +4,8 @@
 
 #include <car_server.h>
 
+CarServer server(80, 81);
+
 void setup()
 {
   Serial.begin(115200);
@@ -11,10 +13,10 @@ void setup()
 
   begin_wifi();
 
-  server_setup();
+  server.setup();
 }
 
 void loop()
 {
-  server_loop();
+  server.loop();
 }
