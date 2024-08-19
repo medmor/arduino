@@ -2,8 +2,8 @@
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 
-const char *ssid = "ZTE_2.4G_YqmMRN";
-const char *password = "paEuECPP";
+const char *ssid = "";
+const char *password = "";
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
