@@ -19,7 +19,6 @@ void Motor::forward()
 
 void Motor::backward()
 {
-    Serial.println("Motor::backward()");
     digitalWrite(in1, LOW);
     digitalWrite(in2, HIGH);
 }

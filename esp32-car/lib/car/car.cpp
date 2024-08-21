@@ -10,7 +10,6 @@ Car::Car(int in1M1, int in2M1, int in1M2, int in2M2)
 
 void Car::forward()
 {
-    Serial.println("Car::forward()");
     motor1.forward();
     motor2.forward();
 
