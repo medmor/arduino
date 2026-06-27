@@ -17,7 +17,7 @@ const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 const CHARACTERISTIC_UUID = 'beb5483e-36e1-4688-b7f5-ea07361f1196';
 const TARGET_NAME = 'ESP32C3-Car-BLE';
 
-type ConnState = 'idle' | 'scanning' | 'connecting' | 'connected' | 'sending';
+type ConnState = 'idle' | 'scanning' | 'connecting' | 'connected';
 
 export default function App() {
   const managerRef = useRef<BleManager | null>(null);
@@ -114,7 +114,6 @@ export default function App() {
       return;
     }
     try {
-      setConn('sending');
       const valueBase64 = Buffer.from(cmd, 'utf8').toString('base64');
       await dev.writeCharacteristicWithResponseForService(
         SERVICE_UUID,
@@ -126,10 +125,6 @@ export default function App() {
       setStatus(`Send failed: ${e?.message ?? String(e)}`);
       setConn('idle');
       deviceRef.current = null;
-    } finally {
-      if (deviceRef.current) {
-        setConn('connected');
-      }
     }
   }, []);
 
@@ -160,7 +155,7 @@ export default function App() {
       style={[styles.btn, style]}
       onPressIn={() => send(cmd)}
       onPressOut={() => send('stop')}
-      disabled={conn !== 'connected' && conn !== 'sending'}
+      disabled={conn !== 'connected'}
       activeOpacity={0.5}>
       <Text style={styles.btnText}>{label}</Text>
     </TouchableOpacity>
