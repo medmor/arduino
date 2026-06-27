@@ -116,10 +116,11 @@ export default function App() {
     }
     try {
       setConn('sending');
+      const valueBase64 = Buffer.from(cmd, 'utf8').toString('base64');
       await dev.writeCharacteristicWithResponseForService(
-        CHARACTERISTIC_UUID,
         SERVICE_UUID,
-        cmd,
+        CHARACTERISTIC_UUID,
+        valueBase64,
       );
       setStatus(`Sent: ${cmd}`);
     } catch (e: any) {

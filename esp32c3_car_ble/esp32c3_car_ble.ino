@@ -11,6 +11,19 @@
 
 Car car(2, 3, 4, 5); // ESP32-C3 Super Mini safe GPIOs for DRV8833
 
+BLEServer *pServer = nullptr;
+
+class ServerCallbacks : public BLEServerCallbacks
+{
+    void onConnect(BLEServer *server) override { }
+
+    void onDisconnect(BLEServer *server) override
+    {
+        // Restart advertising so the phone can reconnect without a reboot.
+        BLEDevice::startAdvertising();
+    }
+};
+
 class CommandCallback : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *pChar) override
@@ -43,7 +56,8 @@ void setup()
     Serial.println("Starting ESP32-C3 BLE Car...");
 
     BLEDevice::init("ESP32C3-Car-BLE");
-    BLEServer *pServer = BLEDevice::createServer();
+    pServer = BLEDevice::createServer();
+    pServer->setCallbacks(new ServerCallbacks());
     BLEService *pService = pServer->createService(SERVICE_UUID);
 
     BLECharacteristic *pChar = pService->createCharacteristic(
