@@ -19,6 +19,39 @@ const TARGET_NAME = 'ESP32C3-Car-BLE';
 
 type ConnState = 'idle' | 'scanning' | 'connecting' | 'connected';
 
+type DirButtonProps = {
+  label: string;
+  cmd: string;
+  disabled: boolean;
+  onPress: (cmd: string) => void;
+  onRelease: (cmd: string) => void;
+  style?: object;
+};
+
+function DirButton({label, cmd, disabled, onPress, onRelease, style}: DirButtonProps) {
+  const [pressed, setPressed] = useState(false);
+  const handleStart = () => {
+    if (disabled) {
+      return;
+    }
+    setPressed(true);
+    onPress(cmd);
+  };
+  const handleEnd = () => {
+    setPressed(false);
+    onRelease(cmd);
+  };
+  return (
+    <View
+      style={[styles.btn, style, pressed && styles.btnPressed]}
+      onTouchStart={handleStart}
+      onTouchEnd={handleEnd}
+      onTouchCancel={handleEnd}>
+      <Text style={styles.btnText}>{label}</Text>
+    </View>
+  );
+}
+
 export default function App() {
   const managerRef = useRef<BleManager | null>(null);
   const deviceRef = useRef<Device | null>(null);
@@ -142,25 +175,6 @@ export default function App() {
     setStatus('Disconnected');
   }, []);
 
-  const DirButton = ({
-    label,
-    cmd,
-    style,
-  }: {
-    label: string;
-    cmd: string;
-    style?: object;
-  }) => (
-    <TouchableOpacity
-      style={[styles.btn, style]}
-      onPressIn={() => send(cmd)}
-      onPressOut={() => send('stop')}
-      disabled={conn !== 'connected'}
-      activeOpacity={0.5}>
-      <Text style={styles.btnText}>{label}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -183,12 +197,36 @@ export default function App() {
 
       <View style={styles.pad}>
         <View style={styles.pair}>
-          <DirButton label="◀" cmd="left" />
-          <DirButton label="▶" cmd="right" />
+          <DirButton
+            label="◀"
+            cmd="left"
+            disabled={conn !== 'connected'}
+            onPress={send}
+            onRelease={() => send('stop')}
+          />
+          <DirButton
+            label="▶"
+            cmd="right"
+            disabled={conn !== 'connected'}
+            onPress={send}
+            onRelease={() => send('stop')}
+          />
         </View>
         <View style={styles.pair}>
-          <DirButton label="▲" cmd="forward" />
-          <DirButton label="▼" cmd="backward" />
+          <DirButton
+            label="▲"
+            cmd="forward"
+            disabled={conn !== 'connected'}
+            onPress={send}
+            onRelease={() => send('stop')}
+          />
+          <DirButton
+            label="▼"
+            cmd="backward"
+            disabled={conn !== 'connected'}
+            onPress={send}
+            onRelease={() => send('stop')}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -244,4 +282,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {color: '#fff', fontSize: 38, fontWeight: '700'},
+  btnPressed: {backgroundColor: '#0f4fb8'},
 });
