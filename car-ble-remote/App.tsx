@@ -196,7 +196,7 @@ export default function App() {
       </View>
 
       <View style={styles.pad}>
-        <View style={styles.pair}>
+        <View style={styles.pairLeft}>
           <DirButton
             label="◀"
             cmd="left"
@@ -212,7 +212,7 @@ export default function App() {
             onRelease={() => send('stop')}
           />
         </View>
-        <View style={styles.pair}>
+        <View style={styles.pairRight}>
           <DirButton
             label="▲"
             cmd="forward"
@@ -263,12 +263,24 @@ const styles = StyleSheet.create({
   connected: {backgroundColor: '#d93636'},
   connectBtnText: {color: '#fff', fontSize: 16, fontWeight: '700'},
   pad: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: BTN_SIZE * 3,
+    flex: 1,
+    width: '100%',
+    position: 'relative',
   },
-  pair: {
+  pairLeft: {
+    position: 'absolute',
+    left: '30%',
+    top: '50%',
+    transform: [{translateX: -BTN_SIZE}, {translateY: -BTN_SIZE / 2}],
+    flexDirection: 'row',
+    width: BTN_SIZE * 2,
+    justifyContent: 'space-between',
+  },
+  pairRight: {
+    position: 'absolute',
+    left: '70%',
+    top: '50%',
+    transform: [{translateX: -BTN_SIZE / 2}, {translateY: -BTN_SIZE}],
     flexDirection: 'column',
     height: BTN_SIZE * 2,
     justifyContent: 'space-between',
