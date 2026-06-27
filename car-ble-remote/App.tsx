@@ -6,7 +6,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Alert,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
@@ -188,23 +187,20 @@ export default function App() {
       </View>
 
       <View style={styles.pad}>
-        <DirButton label="▲" cmd="forward" style={styles.up} />
-        <DirButton label="▼" cmd="backward" style={styles.down} />
-        <DirButton label="◀" cmd="left" style={styles.left} />
-        <DirButton label="▶" cmd="right" style={styles.right} />
-        <TouchableOpacity
-          style={[styles.btn, styles.stop]}
-          onPress={() => send('stop')}
-          disabled={conn !== 'connected' && conn !== 'sending'}
-          activeOpacity={0.5}>
-          <Text style={styles.stopText}>■</Text>
-        </TouchableOpacity>
+        <View style={styles.pair}>
+          <DirButton label="◀" cmd="left" />
+          <DirButton label="▶" cmd="right" />
+        </View>
+        <View style={styles.pair}>
+          <DirButton label="▲" cmd="forward" />
+          <DirButton label="▼" cmd="backward" />
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
-const BTN_SIZE = 90;
+const BTN_SIZE = 100;
 
 const styles = StyleSheet.create({
   container: {
@@ -224,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 24,
   },
-  row: {flexDirection: 'row', marginBottom: 30},
+  row: {flexDirection: 'row', marginBottom: 40},
   connectBtn: {
     paddingHorizontal: 28,
     paddingVertical: 12,
@@ -234,12 +230,17 @@ const styles = StyleSheet.create({
   connected: {backgroundColor: '#d93636'},
   connectBtnText: {color: '#fff', fontSize: 16, fontWeight: '700'},
   pad: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     width: BTN_SIZE * 3,
-    height: BTN_SIZE * 3,
-    position: 'relative',
+  },
+  pair: {
+    flexDirection: 'column',
+    height: BTN_SIZE * 2,
+    justifyContent: 'space-between',
   },
   btn: {
-    position: 'absolute',
     width: BTN_SIZE,
     height: BTN_SIZE,
     borderRadius: BTN_SIZE / 2,
@@ -247,15 +248,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnText: {color: '#fff', fontSize: 34, fontWeight: '700'},
-  up: {top: 0, left: BTN_SIZE},
-  down: {bottom: 0, left: BTN_SIZE},
-  left: {left: 0, top: BTN_SIZE},
-  right: {right: 0, top: BTN_SIZE},
-  stop: {
-    left: BTN_SIZE,
-    top: BTN_SIZE,
-    backgroundColor: '#444b53',
-  },
-  stopText: {color: '#fff', fontSize: 28, fontWeight: '700'},
+  btnText: {color: '#fff', fontSize: 38, fontWeight: '700'},
 });
