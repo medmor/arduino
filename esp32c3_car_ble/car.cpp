@@ -9,14 +9,14 @@ Car::Car(int in1M1, int in2M1, int in1M2, int in2M2)
 void Car::forward()
 {
     Serial.println("Car::forward()");
-    motor1.forward();
+    motor1.backward();
     motor2.forward();
 }
 
 void Car::backward()
 {
     Serial.println("Car::backward()");
-    motor1.backward();
+    motor1.forward();
     motor2.backward();
 }
 
@@ -24,14 +24,14 @@ void Car::left()
 {
     Serial.println("Car::left()");
     motor1.forward();
-    motor2.stop();
+    motor2.forward();
 }
 
 void Car::right()
 {
     Serial.println("Car::right()");
-    motor1.stop();
-    motor2.forward();
+    motor1.backward();
+    motor2.backward();
 }
 
 void Car::stop()
