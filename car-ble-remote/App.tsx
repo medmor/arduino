@@ -233,7 +233,7 @@ export default function App() {
   );
 }
 
-const BTN_SIZE = 100;
+const BTN_SIZE = 150;
 
 const styles = StyleSheet.create({
   container: {
@@ -269,20 +269,20 @@ const styles = StyleSheet.create({
   },
   pairLeft: {
     position: 'absolute',
-    left: '30%',
-    top: '50%',
+    left: '20%',
+    top: '25%',
     transform: [{translateX: -BTN_SIZE}, {translateY: -BTN_SIZE / 2}],
     flexDirection: 'row',
-    width: BTN_SIZE * 2,
+    width: BTN_SIZE * 2.2,
     justifyContent: 'space-between',
   },
   pairRight: {
     position: 'absolute',
-    left: '70%',
-    top: '50%',
+    left: '80%',
+    top: '5%',
     transform: [{translateX: -BTN_SIZE / 2}, {translateY: -BTN_SIZE}],
     flexDirection: 'column',
-    height: BTN_SIZE * 2,
+    height: BTN_SIZE * 2.2,
     justifyContent: 'space-between',
   },
   btn: {
