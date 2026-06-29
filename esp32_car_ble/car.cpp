@@ -26,7 +26,7 @@ void Car::backward()
 void Car::left()
 {
     Serial.println("Car::left()");
-    motor1.backward();
+    //motor1.backward();
     motor2.forward();
 }
 
@@ -34,7 +34,7 @@ void Car::right()
 {
     Serial.println("Car::right()");
     motor1.forward();
-    motor2.backward();
+    //motor2.backward();
 }
 
 void Car::stop()
