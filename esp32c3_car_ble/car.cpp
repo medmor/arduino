@@ -20,13 +20,13 @@ void Car::backward()
 
 void Car::left()
 {
-    motor1.forward();
+    motor2.forward();
 
 }
 
 void Car::right()
 {
-    motor2.forward();
+    motor1.forward();
 
 }
 
