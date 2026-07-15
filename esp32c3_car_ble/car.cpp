@@ -25,13 +25,15 @@ void Car::backward()
 
 void Car::left()
 {
-    motor2.forward();
+    motor1.forward();
+    motor2.backward();
     moving = true;
 }
 
 void Car::right()
 {
-    motor1.forward();
+    motor1.backward();
+    motor2.forward();
     moving = true;
 }
 
