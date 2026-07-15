@@ -9,7 +9,7 @@
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361f1196"
 
-Car car(2, 3, 4, 5, 8); // ESP32-C3 Super Mini safe GPIOs for DRV8833 + LED
+Car car(2, 3, 4, 5/*, 8*/); // ESP32-C3 Super Mini safe GPIOs for DRV8833
 
 BLEServer *pServer = nullptr;
 
@@ -81,6 +81,6 @@ void setup()
 
 void loop()
 {
-    car.update(millis());
+    // car.update(millis());
     delay(10);
 }
