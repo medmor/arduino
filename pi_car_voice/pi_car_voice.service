@@ -1,0 +1,18 @@
+[Unit]
+Description=Pi Voice Controlled Car
+After=network.target sound.target
+
+[Service]
+Type=simple
+User=medmor
+Group=medmor
+WorkingDirectory=/home/medmor/pi_car_voice
+Environment="PATH=/home/medmor/pi_car_voice_env/bin"
+Environment="PYTHONUNBUFFERED=1"
+Environment="PULSE_RUNTIME_PATH=/run/user/1000"
+ExecStart=/home/medmor/pi_car_voice_env/bin/python /home/medmor/pi_car_voice/main.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
