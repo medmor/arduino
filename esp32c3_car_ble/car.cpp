@@ -3,7 +3,7 @@
 Car::Car(int in1M1, int in2M1, int in1M2, int in2M2/*, int lightPin*/)
     // : lightPin(lightPin)
 {
-    motor1.setUp(in2M1, in1M1);
+    motor1.setUp(in1M1, in2M1);
     motor2.setUp(in1M2, in2M2);
     // pinMode(lightPin, OUTPUT);
     // digitalWrite(lightPin, LOW);
