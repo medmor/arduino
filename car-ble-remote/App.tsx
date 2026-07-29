@@ -12,10 +12,14 @@ import {
 import { BleManager, Device } from 'react-native-ble-plx';
 type AndroidPermission = (typeof PermissionsAndroid.PERMISSIONS)[keyof typeof PermissionsAndroid.PERMISSIONS];
 
-// Keep in sync with esp32c3_car_ble/esp32c3_car_ble.ino
+// Keep in sync with the ESP32 BLE firmware sketches.
+// TODO: change this list later to the final board name(s).
 const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 const CHARACTERISTIC_UUID = 'beb5483e-36e1-4688-b7f5-ea07361f1196';
-const TARGET_NAME = 'ESP32C3-Car-BLE';
+const TARGET_NAMES = ['ESP32C3-Car-BLE', 'ESP32CE-Car-BLE'];
+
+const matchesTargetName = (name: string) =>
+  TARGET_NAMES.some(target => name.toLowerCase().includes(target.toLowerCase()));
 
 type ConnState = 'idle' | 'scanning' | 'connecting' | 'connected';
 
@@ -99,41 +103,44 @@ export default function App() {
 
       mgr.stopDeviceScan();
 
-      mgr.startDeviceScan(
-        [SERVICE_UUID],
-        {allowDuplicates: false},
-        async (err, device) => {
-          if (err || !device) {
-            return;
-          }
-          const name = device.name ?? device.localName ?? '';
-          if (!name.includes(TARGET_NAME)) {
-            return;
-          }
-          mgr.stopDeviceScan();
+      mgr.startDeviceScan([], {allowDuplicates: false}, async (err, device) => {
+        if (err || !device) {
+          return;
+        }
 
-          try {
-            setConn('connecting');
-            setStatus(`Connecting to ${name}...`);
-            await device.connect({autoConnect: false});
-            await device.discoverAllServicesAndCharacteristics();
-            deviceRef.current = device;
-            setConn('connected');
-            setStatus(`Connected to ${name}`);
-          } catch (e: any) {
-            setConn('idle');
-            setStatus(`Connect failed: ${e?.message ?? String(e)}`);
-          }
-        },
-      );
+        const name = (device.name ?? device.localName ?? '').trim();
+        const serviceUuids = device.serviceUUIDs ?? [];
+        const serviceMatches = serviceUuids.some(
+          uuid => uuid.toLowerCase() === SERVICE_UUID.toLowerCase(),
+        );
+
+        if (!matchesTargetName(name) && !serviceMatches) {
+          return;
+        }
+
+        mgr.stopDeviceScan();
+
+        try {
+          setConn('connecting');
+          setStatus(`Connecting to ${name || 'ESP32 BLE device'}...`);
+          await device.connect({autoConnect: false});
+          await device.discoverAllServicesAndCharacteristics();
+          deviceRef.current = device;
+          setConn('connected');
+          setStatus(`Connected to ${name || 'ESP32 BLE device'}`);
+        } catch (e: any) {
+          setConn('idle');
+          setStatus(`Connect failed: ${e?.message ?? String(e)}`);
+        }
+      });
 
       setTimeout(() => {
         if (deviceRef.current == null) {
           mgr.stopDeviceScan();
           setConn('idle');
-          setStatus(TARGET_NAME + ' not found');
+          setStatus('ESP32 BLE car not found');
         }
-      }, 10000);
+      }, 15000);
     } catch (e: any) {
       setConn('idle');
       setStatus(`Scan failed: ${e?.message ?? String(e)}`);
@@ -178,7 +185,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <Text style={styles.title}>ESP32-C3 Car</Text>
+      <Text style={styles.title}>ESP32 BLE Car</Text>
       <Text style={styles.status}>{status}</Text>
 
       <View style={styles.row}>
